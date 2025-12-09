@@ -566,8 +566,8 @@ namespace ipxp {
 
 #define IPFIX_VLAN_TEMPLATE(F) F(VLAN_ID)
 #define IPFIX_QINQ_TEMPLATE(F)                                                                     \
-    F(DOT1Q_CUSTOMER_VLAN_ID)                                                                      \
-	F(DOT1Q_VLAN_ID)
+    F(DOT1Q_VLAN_ID)                                                                               \
+	F(DOT1Q_CUSTOMER_VLAN_ID)
 
 #define IPFIX_NETTISA_TEMPLATE(F)                                                                  \
 	F(NTS_MEAN)                                                                                    \
@@ -620,6 +620,7 @@ namespace ipxp {
 	IPFIX_SSADETECTOR_TEMPLATE(F)                                                                  \
 	IPFIX_ICMP_TEMPLATE(F)                                                                         \
 	IPFIX_VLAN_TEMPLATE(F)                                                                         \
+	IPFIX_QINQ_TEMPLATE(F)                                                                         \
 	IPFIX_NETTISA_TEMPLATE(F)                                                                      \
 	IPFIX_FLOW_HASH_TEMPLATE(F)
 

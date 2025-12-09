@@ -10,7 +10,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-#include "vlan.hpp"
+#include "qinq.hpp"
 
 #include <iostream>
 
@@ -19,37 +19,38 @@
 
 namespace ipxp {
 
-static const PluginManifest vlanPluginManifest = {
-	.name = "vlan",
-	.description = "Vlan process plugin for parsing vlan traffic.",
+static const PluginManifest qinqPluginManifest = {
+	.name = "qinq",
+	.description = "QinQ process plugin for parsing QinQ traffic, outputs outer and inner VLAN IDs.",
 	.pluginVersion = "1.0.0",
 	.apiVersion = "1.0.0",
 	.usage =
 		[]() {
-			OptionsParser parser("vlan", "Parse VLAN traffic");
+			OptionsParser parser("qinq", "Parse qinq traffic");
 			parser.usage(std::cout);
 		},
 };
 
-VLANPlugin::VLANPlugin(const std::string& params, int pluginID)
+QinQPlugin::QinQPlugin(const std::string& params, int pluginID)
 	: ProcessPlugin(pluginID)
 {
 	init(params.c_str());
 }
 
-ProcessPlugin* VLANPlugin::copy()
+ProcessPlugin* QinQPlugin::copy()
 {
-	return new VLANPlugin(*this);
+	return new QinQPlugin(*this);
 }
 
-int VLANPlugin::post_create(Flow& rec, const Packet& pkt)
+int QinQPlugin::post_create(Flow& rec, const Packet& pkt)
 {
-	auto ext = new RecordExtVLAN(m_pluginID);
+	auto ext = new RecordExtQinQ(m_pluginID);
 	ext->vlan_id = pkt.vlan_id;
+	ext->vlan_id2 = pkt.vlan_id2;
 	rec.add_extension(ext);
 	return 0;
 }
 
-static const PluginRegistrar<VLANPlugin, ProcessPluginFactory> vlanRegistrar(vlanPluginManifest);
+static const PluginRegistrar<QinQPlugin, ProcessPluginFactory> qinqRegistrar(qinqPluginManifest);
 
 } // namespace ipxp
