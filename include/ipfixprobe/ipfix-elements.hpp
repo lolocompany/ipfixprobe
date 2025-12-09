@@ -565,6 +565,7 @@ namespace ipxp {
 #define IPFIX_ICMP_TEMPLATE(F) F(L4_ICMP_TYPE_CODE)
 
 #define IPFIX_VLAN_TEMPLATE(F) F(VLAN_ID)
+
 #define IPFIX_QINQ_TEMPLATE(F)                                                                     \
     F(DOT1Q_VLAN_ID)                                                                               \
 	F(DOT1Q_CUSTOMER_VLAN_ID)
