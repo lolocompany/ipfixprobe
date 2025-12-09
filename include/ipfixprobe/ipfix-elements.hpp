@@ -93,6 +93,8 @@ namespace ipxp {
 #define ETHERTYPE(F) F(0, 256, 2, nullptr)
 
 #define VLAN_ID(F) F(0, 58, 2, nullptr)
+#define DOT1Q_VLAN_ID(F) F(0, 243, 2, nullptr)
+#define DOT1Q_CUSTOMER_VLAN_ID(F) F(0, 245, 2, nullptr)
 
 #define L2_SRC_MAC(F) F(0, 56, 6, flow.src_mac)
 #define L2_DST_MAC(F) F(0, 80, 6, flow.dst_mac)
@@ -563,6 +565,9 @@ namespace ipxp {
 #define IPFIX_ICMP_TEMPLATE(F) F(L4_ICMP_TYPE_CODE)
 
 #define IPFIX_VLAN_TEMPLATE(F) F(VLAN_ID)
+#define IPFIX_QINQ_TEMPLATE(F)                                                                     \
+    F(DOT1Q_CUSTOMER_VLAN_ID)                                                                      \
+	F(DOT1Q_VLAN_ID)
 
 #define IPFIX_NETTISA_TEMPLATE(F)                                                                  \
 	F(NTS_MEAN)                                                                                    \

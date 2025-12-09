@@ -39,10 +39,11 @@ UR_FIELDS(uint16 VLAN_ID)
 struct RecordExtVLAN : public RecordExt {
 	// vlan id is in the host byte order
 	uint16_t vlan_id;
-
+	uint16_t vlan_id2;
 	RecordExtVLAN(int pluginID)
 		: RecordExt(pluginID)
 		, vlan_id(0)
+		, vlan_id2(0)
 	{
 	}
 
@@ -64,19 +65,33 @@ struct RecordExtVLAN : public RecordExt {
 		}
 
 		*reinterpret_cast<uint16_t*>(buffer) = htons(vlan_id);
-		return LEN;
+		if( vlan_id2 == 0 ) {
+			return LEN;
+		}
+		if( size < 2 * LEN ) {
+			return LEN;
+		}
+		*reinterpret_cast<uint16_t*>(buffer + LEN) = htons(vlan_id2);
+		return 2 * LEN;
 	}
 
 	const char** get_ipfix_tmplt() const
 	{
-		static const char* ipfix_template[] = {IPFIX_VLAN_TEMPLATE(IPFIX_FIELD_NAMES) NULL};
-		return ipfix_template;
+		static const char* ipfix_vlan_template[] = {IPFIX_VLAN_TEMPLATE(IPFIX_FIELD_NAMES) NULL};
+		static const char* ipfix_qinq_template[] = {IPFIX_QINQ_TEMPLATE(IPFIX_FIELD_NAMES) NULL};
+		if( vlan_id2 == 0 ) {
+			return ipfix_vlan_template;
+		}
+	    return ipfix_qinq_template;		
 	}
 
 	std::string get_text() const
 	{
 		std::ostringstream out;
 		out << "vlan_id=\"" << vlan_id << '"';
+		if( vlan_id2 != 0 ) {
+			out << ", vlan_id2=\"" << vlan_id2 << '"';
+		}
 		return out.str();
 	}
 };
