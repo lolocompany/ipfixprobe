@@ -46,6 +46,7 @@ int VLANPlugin::post_create(Flow& rec, const Packet& pkt)
 {
 	auto ext = new RecordExtVLAN(m_pluginID);
 	ext->vlan_id = pkt.vlan_id;
+	ext->vlan_id2 = pkt.vlan_id2;
 	rec.add_extension(ext);
 	return 0;
 }
