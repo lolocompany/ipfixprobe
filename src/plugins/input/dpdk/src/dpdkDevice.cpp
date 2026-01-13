@@ -107,6 +107,8 @@ void DpdkDevice::recognizeDriver()
 	}
 	std::cerr << "\tDetected HW timestamp capability: " << (m_supportedHWTimestamp ? "yes" : "no")
 			  << std::endl;
+
+
 }
 
 void DpdkDevice::registerRxTimestamp()
