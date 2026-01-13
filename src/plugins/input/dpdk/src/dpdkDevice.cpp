@@ -34,9 +34,6 @@
 #include <rte_errno.h>
 #include <rte_version.h>
 #include <unistd.h>
-#ifdef DPDK_DUMP_ENABLED
-#include <rte_pdump.h>
-#endif
 
 namespace ipxp {
 
@@ -278,13 +275,6 @@ void DpdkDevice::enablePort()
 	}
 
 	std::cerr << "DPDK input at port " << m_portID << " started." << std::endl;
-
-#ifdef DPDK_DUMP_ENABLED
-	rte_pdump_init(); // Initialize packet dump framework
-	if (rte_pdump_enable(m_portID, 0, 0) < 0) {
-		std::cerr << "Failed to enable pdump on port " << m_portID << std::endl;
-	}
-#endif
 }
 
 uint16_t DpdkDevice::receive(DpdkMbuf& dpdkMuf, uint16_t rxQueueID)
