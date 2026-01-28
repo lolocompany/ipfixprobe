@@ -24,6 +24,10 @@
 #include <rte_version.h>
 #include <unistd.h>
 
+#ifdef DPDK_PCAP_ENABLED
+#include <rte_pdump.h>
+#endif
+
 #define MEMPOOL_CACHE_SIZE 256
 
 namespace ipxp {
@@ -125,6 +129,10 @@ void DpdkCore::configureEal(const std::string& ealParams)
 	if (rte_eal_init(args.size(), args.data()) < 0) {
 		rte_exit(EXIT_FAILURE, "Cannot initialize RTE_EAL: %s\n", rte_strerror(rte_errno));
 	}
+#ifdef DPDK_PCAP_ENABLED
+	std::cerr << "Initializing DPDK packet dump framework." << std::endl;
+	rte_pdump_init(); // Initialize packet dump framework
+#endif
 }
 
 uint16_t DpdkCore::getRxQueueId() noexcept
