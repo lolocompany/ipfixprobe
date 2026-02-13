@@ -226,7 +226,7 @@ void NHTFlowCache::init(const char* params)
 	m_split_biflow = parser.m_split_biflow;
 	m_enable_fragmentation_cache = parser.m_enable_fragmentation_cache;
 	if( parser.m_source_optimization_enabled ) {
-		m_source_optimization = new SourceOptimization( parser.m_source_optimization_limit, parser.m_source_optimization_networks );
+		m_source_optimization = new SourceOptimization( parser.m_source_optimization_networks );
 	}
 	if (m_enable_fragmentation_cache) {
 		try {
@@ -341,11 +341,7 @@ int NHTFlowCache::put_pkt(Packet& pkt)
 								 // and NHTFlowCache::m_keylen
 		return 0;
 	}
-	char src_ip[INET6_ADDRSTRLEN];
-	char dst_ip[INET6_ADDRSTRLEN];
-	inet_ntop(AF_INET, (const void*) &pkt.src_ip, src_ip, INET6_ADDRSTRLEN);
-	inet_ntop(AF_INET, (const void*) &pkt.dst_ip, dst_ip, INET6_ADDRSTRLEN);
-	printf("packat: %s:%u %s:%u size:%u mode:%d\n", dst_ip, pkt.dst_port, src_ip, pkt.src_port, pkt.ip_len, mode);
+
 	prefetch_export_expired();
 
 	if( m_source_optimization ) {

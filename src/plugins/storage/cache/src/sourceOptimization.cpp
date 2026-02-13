@@ -1,12 +1,22 @@
 /**
  * Source optimization for cache plugin 
+ *
+ * Author: Jimmy Björklund <jimmy@lolo.company>  
+ * Copyright (C) 2024 LoLo Solutions Ltd
+ * Licensed under the MIT License (see LICENSE file for details)
  * 
  * Check if source or destination IP is in given CIDR range and optionally exclude some subranges. 
  * This is used to collect all flows to/from a specific destination into single flow record in cache and then export them together when flow is exported.
  * Main use case is when you want to limit the number of records exported and you only are intresed in where the traffic is going to/from rather than individual flows.
  * 
- * 
- * Author: Jimmy Björklund <jimmy@lolo.company>
+ * storage:
+ *   cache:
+ *     source_optimization: true
+ *     source_optimization_network:
+ *       - main: "10.0.0.0/8"
+ *         exclude: "10.0.2.1/32, 10.0.3.0/24"
+ *       - main: "192.168.0.1/24"
+ *
  * 
  */
 #include <stdint.h>
@@ -23,9 +33,9 @@ SourceOptimization::SourceOptimization() {
     memset(&nets,0,sizeof(nets));
 }
 
-SourceOptimization::SourceOptimization(int count, std::vector<std::string>& vnets) {
-    limit = count;
+SourceOptimization::SourceOptimization(std::vector<std::string>& vnets) {
     net_count = 0;
+    memset(&nets,0,sizeof(nets));
     for( size_t i=0; i < vnets.size(); i++ ) {
         std::string delimiter = ",";
 		std::string token;
@@ -222,68 +232,3 @@ bool SourceOptimization::ip_in_cidr(unsigned char ipv6[IP6_ADDR_LEN], const cidr
     }
     return true;
 }
-
-/* -------------------------------------------------------------------------- 
-
-int main(void) {
-    // Test IPs - mix of v4 and v6
-    const char *test_ips[] = {
-        "10.0.0.5",
-        "10.0.1.23",
-        "2001:db8::1",
-        "2001:db8:abcd::ff",
-        "2001:db9::1",
-        "fe80::1",
-        "192.168.100.10",
-    };
-
-    printf("Testing IP in CIDR (IPv4 + IPv6):\n");
-    printf("==================================\n");
-
-    SourceOptimization range;
-
-    // Example: IPv4 range + exclusion
-    if (!range.cidr_to_mask("10.0.0.0/8", range.nets[0].cidr)) {
-        printf("Failed to parse main CIDR\n");
-        return 1;
-    }
-    if (!range.cidr_to_mask("10.0.1.0/24", range.nets[0].cidr_exlude[0])) {
-        printf("Failed to parse exclude CIDR\n");
-        return 1;
-    }
-
-    // Example: IPv6 range + exclusion
-    // Uncomment to test IPv6
-    //
-    //if (!cidr_to_mask("2001:db8::/32", &range.cidr)) {
-    //    printf("Failed to parse IPv6 CIDR\n");
-    //    return 1;
-    //}
-    //if (!cidr_to_mask("2001:db8:abcd::/48", &range.cidr_exclude[0])) {
-    //    printf("Failed to parse IPv6 exclude\n");
-    //    return 1;
-    //}    
-
-    for (size_t i = 0; i < sizeof(test_ips) / sizeof(test_ips[0]); i++) {
-        const char *result = "OUTSIDE";
-
-        if (range.ip_in_cidr(test_ips[i], range.nets[0].cidr)) {
-            result = "IN RANGE";
-
-            for (int j = 0; j < MAX_CIDER_EXLUDE; j++) {
-                if (range.nets[0].cidr_exlude[j].mask.v4_mask == 0) break;
-
-                if (range.ip_in_cidr(test_ips[i], range.nets[0].cidr_exlude[j])) {
-                    result = "EXCLUDED";
-                    break;
-                }
-            }
-        }
-
-        printf("%-30s → %s\n", test_ips[i], result);
-    }
-
-    return 0;
-}
-
-*/

@@ -89,7 +89,6 @@ public:
 	bool m_split_biflow;
 	bool m_enable_fragmentation_cache;
 	bool m_source_optimization_enabled;
-	uint32_t m_source_optimization_limit;
 	std::size_t m_frag_cache_size;
 	time_t m_frag_cache_timeout;	
 	std::vector<std::string> m_source_optimization_networks;
@@ -102,7 +101,6 @@ public:
 		, m_split_biflow(false)
 		, m_enable_fragmentation_cache(true)
 		, m_source_optimization_enabled(false)
-		, m_source_optimization_limit(-1)
 		, m_frag_cache_size(10007)
 		, // Prime for better distribution in hash table
 		m_frag_cache_timeout(3)
@@ -237,19 +235,6 @@ public:
 					return false;
 				}
 				return true;
-			});
-		register_option(
-			"sol",
-			"source_optimization_limit",
-			"10000",
-			"Ports below this limit are expected to be destination ports.",
-			[this](const char* arg) {
-				try {
-					m_source_optimization_limit = str2num<decltype(m_frag_cache_size)>(arg);
-				} catch (std::invalid_argument& e) {
-					return false;
-				}
-				return m_source_optimization_limit > 0;
 			});
 		register_option(
 			"son",
