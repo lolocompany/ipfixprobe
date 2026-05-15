@@ -148,7 +148,10 @@ rte_eth_conf DpdkDevice::createPortConfig()
 		std::cerr << "RSS is not supported by card, multiple queues will not work as expected."
 				  << std::endl;
 		if( m_rssOffloadSuppress ) {
-			std::cerr << "WARNING: Packets will be ordered by the sending NIC, this only works for virtual cards vm to vm." << std::endl;
+			std::cerr << "WARNING: "<< std::endl
+			          << "    Multiple queues are configured without RSS." << std::endl
+			          << "    Packets need to be ordered by the sending NIC, " << std::endl
+					  << "    this only works for virtual cards (vm to vm)." << std::endl;
 		} else {
 			throw PluginError(
 				"DpdkDevice::createPortConfig() has failed. Required RSS for q>1 is not supported.");
