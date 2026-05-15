@@ -43,7 +43,8 @@ DpdkDevice::DpdkDevice(
 	uint16_t memPoolSize,
 	uint16_t mbufsCount,
 	uint16_t mtuSize,
-	uint64_t rssOffload)
+	uint64_t rssOffload,
+	bool rssOffloadSuppress)
 	: m_portID(portID)
 	, m_rxQueueCount(rxQueueCount)
 	, m_txQueueCount(0)
@@ -53,6 +54,7 @@ DpdkDevice::DpdkDevice(
 	, m_supportedHWTimestamp(false)
 	, m_mtuSize(mtuSize)
 	, m_rssOffload(rssOffload)
+	, m_rssOffloadSuppress(rssOffloadSuppress)
 {
 	validatePort();
 	recognizeDriver();
@@ -145,8 +147,12 @@ rte_eth_conf DpdkDevice::createPortConfig()
 	if (m_rxQueueCount > 1 && !m_supportedRSS) {
 		std::cerr << "RSS is not supported by card, multiple queues will not work as expected."
 				  << std::endl;
-		throw PluginError(
-			"DpdkDevice::createPortConfig() has failed. Required RSS for q>1 is not supported.");
+		if( m_rssOffloadSuppress ) {
+			std::cerr << "WARNING: Packets will be ordered by the sending NIC, this only works for virtual cards vm to vm." << std::endl;
+		} else {
+			throw PluginError(
+				"DpdkDevice::createPortConfig() has failed. Required RSS for q>1 is not supported.");
+		}
 	}
 
 #if RTE_VERSION >= RTE_VERSION_NUM(21, 11, 0, 0)
