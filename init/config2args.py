@@ -161,8 +161,8 @@ def process_input_dpdk_plugin(settings):
     if rss_offload is not None:
         primary_param += f"rss={rss_offload};"
     rss_offload_suppress = settings.get("rss_offload_suppress", None)
-    if rss_offload_suppress is not None:
-        primary_param += f"s={rss_offload_suppress};"
+    if rss_offload_suppress:    
+        primary_param += f"s;"
     primary_param += f"eal={eal}\""
 
     params = []
