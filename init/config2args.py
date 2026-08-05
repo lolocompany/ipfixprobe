@@ -344,7 +344,7 @@ def process_storage(config):
             cache_params.append(f"so={so_value}")
         if "source_optimization_show_unmatched" in cache:
             son_show_value = "true" if cache['source_optimization_show_unmatched'] else "false"
-            cache_params.append(f"son_unm={son_show_value}")
+            cache_params.append(f"so_unm={son_show_value}")
         if "source_optimization_network" in cache:
             son_networks = cache.get("source_optimization_network")
             if son_networks:
