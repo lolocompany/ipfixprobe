@@ -226,7 +226,7 @@ void NHTFlowCache::init(const char* params)
 	m_split_biflow = parser.m_split_biflow;
 	m_enable_fragmentation_cache = parser.m_enable_fragmentation_cache;
 	if( parser.m_source_optimization_enabled ) {
-		m_source_optimization = new SourceOptimization( parser.m_source_optimization_networks );
+		m_source_optimization = new SourceOptimization( parser.m_source_optimization_networks, parser.m_source_optimization_show_unmatched );
 	}
 	if (m_enable_fragmentation_cache) {
 		try {
@@ -352,10 +352,14 @@ int NHTFlowCache::put_pkt(Packet& pkt)
 			pkt.dst_port = 0;
 		}
 		else {
-			fprintf(stderr, "Not matching any rule: src_ip:");
-			fprintf(stderr, "%u.%u.%u.%u", pkt.src_ip.v4 & 0xFF, (pkt.src_ip.v4 >> 8)  & 0xFF, (pkt.src_ip.v4 >> 16) & 0xFF, (pkt.src_ip.v4 >> 24) & 0xFF);
-			fprintf(stderr, " dest_ip:");
-			fprintf(stderr, "%u.%u.%u.%u\n", pkt.dst_ip.v4 & 0xFF, (pkt.dst_ip.v4 >> 8)  & 0xFF, (pkt.dst_ip.v4 >> 16) & 0xFF, (pkt.dst_ip.v4 >> 24) & 0xFF);
+			if( m_source_optimization->show_error ) {
+				// If source optimization is enabled and we are not matching any rule, we will log the packet
+				// to stderr. This is useful for debugging purposes.
+				fprintf(stderr, "Not matching any rule: src_ip:");
+				fprintf(stderr, "%u.%u.%u.%u", pkt.src_ip.v4 & 0xFF, (pkt.src_ip.v4 >> 8)  & 0xFF, (pkt.src_ip.v4 >> 16) & 0xFF, (pkt.src_ip.v4 >> 24) & 0xFF);
+				fprintf(stderr, " dest_ip:");
+				fprintf(stderr, "%u.%u.%u.%u\n", pkt.dst_ip.v4 & 0xFF, (pkt.dst_ip.v4 >> 8)  & 0xFF, (pkt.dst_ip.v4 >> 16) & 0xFF, (pkt.dst_ip.v4 >> 24) & 0xFF);
+			}
 		}
 	}
 	uint64_t hashval

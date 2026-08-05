@@ -419,6 +419,9 @@
             "source_optimization": {
               "type": "boolean"
             },
+            "source_optimization_show_unmatched": {
+              "type": "boolean"
+            },
             "source_optimization_network": {
               "type": "array",
               "items": {

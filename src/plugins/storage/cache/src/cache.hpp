@@ -89,6 +89,7 @@ public:
 	bool m_split_biflow;
 	bool m_enable_fragmentation_cache;
 	bool m_source_optimization_enabled;
+	bool m_source_optimization_show_unmatched;
 	std::size_t m_frag_cache_size;
 	time_t m_frag_cache_timeout;	
 	std::vector<std::string> m_source_optimization_networks;
@@ -101,6 +102,7 @@ public:
 		, m_split_biflow(false)
 		, m_enable_fragmentation_cache(true)
 		, m_source_optimization_enabled(false)
+		, m_source_optimization_show_unmatched(false)
 		, m_frag_cache_size(10007)
 		, // Prime for better distribution in hash table
 		m_frag_cache_timeout(3)
@@ -231,6 +233,21 @@ public:
 					m_source_optimization_enabled = true;
 				} else if (strcmp(arg, "false") == 0) {
 					m_source_optimization_enabled = false;
+				} else {
+					return false;
+				}
+				return true;
+			});
+		register_option(
+			"so_unm",
+			"source_optimization_show_unmatched",
+			"true|false",
+			"Show unmatched source addresses error messages.",
+			[this](const char* arg) {
+				if (strcmp(arg, "true") == 0) {
+					m_source_optimization_show_unmatched = true;
+				} else if (strcmp(arg, "false") == 0) {
+					m_source_optimization_show_unmatched = false;
 				} else {
 					return false;
 				}
