@@ -35,10 +35,11 @@ typedef enum {
 
 class SourceOptimization {
   public:
+    uint8_t show_error;
     uint8_t net_count;
     cidr_nets nets[MAX_CIDER_NETS];
     SourceOptimization();
-    SourceOptimization(std::vector<std::string>& vnets); 
+    SourceOptimization(std::vector<std::string>& vnets, uint8_t show_error_flag);
     bool cidr_to_mask(const char *cidr_str, cidr_mask& out);
     bool ip_in_cidr(const char *ip_str, const cidr_mask& cidr);
     bool ip_in_cidr(uint32_t ipv4, const cidr_mask& cidr);

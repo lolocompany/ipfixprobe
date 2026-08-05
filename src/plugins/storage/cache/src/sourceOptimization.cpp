@@ -29,12 +29,14 @@
 #include "sourceOptimization.hpp"
 
 SourceOptimization::SourceOptimization() {
+    show_error = 0;
     net_count = 0;
     memset(&nets,0,sizeof(nets));
 }
 
-SourceOptimization::SourceOptimization(std::vector<std::string>& vnets) {
+SourceOptimization::SourceOptimization(std::vector<std::string>& vnets, uint8_t show_error_flag) {
     net_count = 0;
+    show_error = show_error_flag;
     memset(&nets,0,sizeof(nets));
     for( size_t i=0; i < vnets.size(); i++ ) {
         std::string delimiter = ",";
